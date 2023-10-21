@@ -33,7 +33,6 @@ const count = ref(0)
         // pages/About.vue
         &#60;template&#62;
           &#60;div&#62;
-            &#60;Navigation /&#62;
             &#60;h1&#62;Page About&#60;/h1&#62;
             &#60;!-- if absent, the child component will not be displayed --&#62;
             &#60;router-view&#62;&#60;/router-view&#62;

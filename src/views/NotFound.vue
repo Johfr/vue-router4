@@ -7,7 +7,7 @@
     <code>
       <pre>
        // router/index.js
-        {
+        { // Routes' Matching Syntax
           path: '/:pathMatch(.*)*',
           name: 'NotFound',
           component: () => import('../views/NotFound.vue')

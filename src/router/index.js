@@ -5,6 +5,8 @@ import Counter from '../components/Counter.vue'
 import Default from '../layouts/Default.vue'
 
 const requestValidated = true
+const isCategory = false
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,19 +34,25 @@ const router = createRouter({
           name: 'about2',
           component: Counter,
         },
-        { // query
-          path: 'query',
-          name: 'about3',
-          component: () => import('../components/AboutQuery.vue'),
-          props: route => ({ query: route.query.q }), // will pass { query: 'lorem ipsum'} as props
-        },
-        {
-          path: 'id=:id',
-          name: 'about-child',
-          component: () => import('../components/ComponentParams.vue'),
-          props: true // will receive id as a props
-        },
       ],
+      meta: {
+        layout: Default
+      }
+    },
+    {
+      path: '/params/id=:id',
+      name: 'params',
+      component: () => import('../views/Params.vue'),
+      props: true, // will receive id as a props
+      meta: {
+        layout: Default
+      }
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import('../views/Products.vue'),
+      props: route => ({query: route.query.category}), // will pass { query: 'classique'} as props with 'classique' as value
       meta: {
         layout: Default
       }
@@ -97,7 +105,12 @@ const router = createRouter({
         layout: Default
       }
     },
-    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFound.vue') },
+    { // Routes' Matching Syntax
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue'),
+      
+    },
   ]
 })
 

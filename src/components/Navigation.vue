@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter } from "vue-router"
 
 const route = useRoute()
 const router = useRouter()
-const ids = [4, 5, 6]
+const ids = [4, 5, 6, 9]
 let history = ref([])
+
+// live : is an exemple to explain how props works
+console.log(route);
 
 const DashboardMeta = ref()
 
@@ -17,10 +20,12 @@ const pushInHistory = (route) => {
   if (history.value.length > 0 && history.value.at(-1).path === route.path) {
 
   } else {
-    history.value.push({
-      name: route.name,
-      path: route.path,
-    })
+    history.value.push(
+      {
+        name: route.name,
+        path: route.path,
+      }
+    )
   }
 }
 const forwardInHistory = () => {
@@ -67,8 +72,8 @@ const putAuthentificationToFalse = () => {
 
       <RouterLink @click="pushInHistory({name: 'home', path: '/'})" to="/">home</RouterLink>
       <RouterLink @click="pushInHistory({name: 'About', path: '/about'})" to="/about">About</RouterLink>
-      <RouterLink @click="pushInHistory({name: 'fff', path: '/about/id=5'})" to="/about/id=5">About with param Id</RouterLink>
-      <RouterLink @click="pushInHistory({name: 'fff', path: '/about/query'})" to="/about/query">About with Query</RouterLink>
+      <RouterLink @click="pushInHistory({name: 'params', path: '/params/id=5'})" to="/params/id=5">Params</RouterLink>
+      <RouterLink @click="pushInHistory({name: 'products', path: '/products'})" to="/products">Query</RouterLink>
       <div v-for="id in ids" :key="id">
         <!-- @click="checkId(id)" -->
         <RouterLink @click="pushInHistory({name: 'details', path: '/details/' + id})" :to="{path : '/details/' + id }">details {{ id }}</RouterLink>

@@ -72,8 +72,13 @@ pre {
 .page {
   padding-top: 80px;
 }
-.card {
-  padding: 2em;
+.bold {
+  font-weight: 700;
+}
+.list-btn {
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid;
 }
 
 .d-flex {
@@ -82,6 +87,18 @@ pre {
 .justify-center {
   justify-content: center;
 }
+
+/* COLORS */
+.color-grey {
+  background-color: #f5f5f5;
+}
+.info {
+  color: rgb(160, 61, 253);
+}
+.alert {
+  color: rgb(253, 61, 61);
+}
+
 #app {
   width: 100%;
   min-height: calc(100vh - 64px);
