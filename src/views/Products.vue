@@ -2,6 +2,7 @@
 import { ref, defineProps, watchEffect } from 'vue'
 
 const props = defineProps({
+  params: String,
   query: String
 })
 
@@ -72,15 +73,48 @@ const bright = (productCat) => {
 
 <template>
   <div class="page products">
-    <h1>Query</h1>
-    <p> Query Props : {{ props }}</p>
-    <p> Object.keys(props) : {{ Object.keys(props) }}</p>
-    <p> Object.values(props) : {{ Object.values(props) }}</p>
+    <h1>Page produits</h1>
+    <p> Props : 
+      <pre>{{ props }}</pre>
+    </p>
+    
     <section>
       <h2>Filtrer par categorie :</h2>
-      <button class="list-btn" @mouseover="bright('exterieur')" @mouseleave="catFocus = ''" @click="$router.replace({ path: '/products',  query: { category: 'exterieur' } })">exterieur</button>
-      <button class="list-btn" @mouseover="bright('classique')" @mouseleave="catFocus = ''" @click="$router.replace({ path: '/products',  query: { category: 'classique' } })">classique</button>
-      <button class="list-btn" @mouseover="bright('plante grasse')" @mouseleave="catFocus = ''" @click="$router.replace({ path: '/products',  query: { category: 'plante grasse' } })">plante grasse</button>
+      <button
+        class="list-btn"
+        @mouseover="bright('exterieur')"
+        @mouseleave="catFocus = ''"
+        @click="$router.replace({ path: '/products/plantes',  query: { category: 'exterieur' } })"
+      >
+        exterieur
+      </button>
+
+      <button
+        class="list-btn"
+        @mouseover="bright('classique')"
+        @mouseleave="catFocus = ''"
+        @click="$router.replace({ path: '/products/plantes',  query: { category: 'classique' } })"
+      >
+        classique
+      </button>
+
+      <button
+        class="list-btn"
+        @mouseover="bright('plante grasse')"
+        @mouseleave="catFocus = ''"
+        @click="$router.replace({ path: '/products/plantes',  query: { category: 'plante grasse' } })"
+      >
+        plante grasse
+      </button>
+
+      <button
+        class="list-btn"
+        @mouseover="bright('non-defini')"
+        @mouseleave="catFocus = ''"
+        @click="$router.replace({ path: '/products/plantes',  query: { category: 'non-defini' } })"
+      >
+        non-defini
+      </button>
       <button class="list-btn color-grey" @click="$router.replace({ path: '/products' })">Reset</button>
     </section>
 
@@ -104,8 +138,15 @@ const bright = (productCat) => {
             path: '/products',
             name: 'products',
             component: () => import('../views/Products.vue'),
-            // will pass { query: 'classique'} as props with 'classique' as value
-            props: route => ({ query: route.query.category }),
+            // will pass { params: plantes, query: 'classique'} as props
+            props: route => ({params: route.params.productName, query: route.query.category}), 
+            children: [
+              {
+                path: ':productName',
+                name: 'product-name',
+                component: () => import('../views/Products.vue'),
+              },
+            ],
             meta: {
               layout: Default
             }
@@ -115,12 +156,13 @@ const bright = (productCat) => {
 
       <code>
         <pre>
-          // components/AboutQuery.vue
+          // views/Products.vue
           &#60;script setup&#62;
-            // components/AboutQuery.vue
+            // views/Products.vue
             import { defineProps } from 'vue'
 
             const props = defineProps({
+              params: String,
               query: String
             })
 

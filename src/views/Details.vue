@@ -5,13 +5,14 @@ const router = useRouter()
 
 // on button click : show or hide code.
 const showCode = ref(false)
+const showMore = ref(false)
 
 onBeforeRouteUpdate(async (to, from) => {
-  console.log('route update', typeof to.params.id);
-  if (to.params.id != "5" && to.params.id != "9") {
+  console.log('route update');
+  if (to.params.id != "5") {
     router.replace({
       name: "redirection",
-      params: { from: 'details/' + to.params.id, msg: "seule la fiche details/5 est accessible "}
+      query: { redirect: '/' + to.name + '/' + to.params.id }
     })
   }
 })
@@ -20,8 +21,7 @@ onBeforeRouteUpdate(async (to, from) => {
 <template>
   <div class="page">
     <h1>Page Details</h1>
-    <router-link to="/details/4">Aller vers detail 4</router-link>
-    <router-link to="/details/9">Aller vers detail 9</router-link>
+      <router-link to="/details/4">Aller vers detail 4</router-link>
     <div>
       Params : {{ $route.params.id }}
     </div>
@@ -37,13 +37,15 @@ onBeforeRouteUpdate(async (to, from) => {
             name: 'details',
             component: () => import('../views/Details.vue'),
             beforeEnter: (to, from, next) => {
-              if (to.params.id === "5" || to.params.id === "9") {
+              if (to.params.id === "5") {
                 next()
               } else {
-                next({
-                  name: "redirection", params: { from: to.name || '',
-                  msg: "Seule la fiche details/5 est accessible"}
-                })
+                next(
+                  {
+                    name: "redirection",
+                    query: { redirect: to.name }
+                  }
+                )
               }
             },
             meta: {
@@ -52,47 +54,30 @@ onBeforeRouteUpdate(async (to, from) => {
           },
         </pre>
       </code>
-      <code v-if="$route.params.id === '9'">
-        <pre>
-          // pages/Details.vue
-          import { onBeforeRouteUpdate, useRouter } from "vue-router"
-          const router = useRouter()
+    
+      <button v-if="!showMore" @click="showMore = true">Show More</button>
 
-          onBeforeRouteUpdate(async (to, from) => {
-            console.log('route update');
-            if (to.params.id != "5" && to.params.id != "9") {
-              router.replace({
-                name: "redirection",
-                params: { from: 'details/' + to.params.id, msg: "seule la fiche details/5 est accessible "}
-              })
-            }
-          })
-        </pre>
-      </code>
-      <code v-else>
+      <code v-if="showMore">
         <pre>
-          // pages/Details.vue
           &#60;script setup&#62;
-          &#60;/script&#62;
+            // pages/Details.vue
+            import { onBeforeRouteUpdate, useRouter } from "vue-router"
+            // import { onBeforeRouteLeave, useRoute } from "vue-router"
+            const router = useRouter()
 
-          &#60;template&#62;
-            &#60;p&#62; Params : &#123;&#123; $route.params.id &#125;&#125; &#60;/p&#62;
-          &#60;/template&#62;
+            onBeforeRouteUpdate(async (to, from) => {
+              console.log('route update');
+              if (to.params.id != "5") {
+                router.replace({
+                  name: "redirection",
+                  query: { redirect: '/' + to.name + '/' + to.params.id }
+                })
+              }
+            })
+          &#60;/script&#62;
         </pre>
       </code>
     </div>
-
-    <section>
-        <h3>Meta & beforeEnter</h3>
-        <ul>
-          <li>
-            <span class="bold">meta</span> : est utile pour les autorisations statiques qui ne changent pas fréquemment.
-          </li>
-          <li>
-            <span class="bold">beforeEnter</span> : est utile pour les autorisations plus dynamiques ou complexes qui nécessitent des vérifications à la volée.
-          </li>
-        </ul>
-      </section>
   </div>
 </template>
 

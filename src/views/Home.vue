@@ -1,7 +1,5 @@
 <script setup>
 // refaire carbon code
-// faire une page résumé
-
 </script>
 
 <template>

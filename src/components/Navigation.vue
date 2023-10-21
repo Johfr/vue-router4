@@ -1,94 +1,92 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from "vue-router"
+import { useAuthentification } from "../store/useAuthentification"
+
+const authStore = useAuthentification()
+const isAuth = computed(() => authStore.auth)
+const userRoles = computed(() => authStore.roles)
 
 const route = useRoute()
 const router = useRouter()
-const ids = [4, 5, 6, 9]
+const ids = [4, 5]
 let history = ref([])
 
 // live : is an exemple to explain how props works
-console.log(route);
+console.log('route', route);
 
-const DashboardMeta = ref()
+const userAccess = ref(isAuth.value)
 
-const backInHistory = () => {
-  history.value.pop()
-}
-const pushInHistory = (route) => {
-  // create an historic of the navigation
-  if (history.value.length > 0 && history.value.at(-1).path === route.path) {
-
-  } else {
-    history.value.push(
-      {
-        name: route.name,
-        path: route.path,
-      }
-    )
-  }
-}
-const forwardInHistory = () => {
-  // history.value.splice(1, history.length)
-}
-// get the meta data from the route /Dashboard on created
-router.getRoutes().forEach(route => {
-  if (route.name === "Dashboard") {
-    DashboardMeta.value = route.meta.isAuthenticated
-  }
-})
-
-// used to change the value and to simulate the access to /Dashboard
+// used to change the value and to simulate the access to /dashboard
 const putAuthentificationToFalse = () => {
-  router.getRoutes().forEach(route => {
-    if (route.name === "Dashboard") {
-      route.meta.isAuthenticated = !route.meta.isAuthenticated
-      DashboardMeta.value = route.meta.isAuthenticated
-    }
-  })
-  // redirige seulement si on est sur /Dashboard
-  if (route.name === "Dashboard" && DashboardMeta.value === false) {
-    router.push({ name: 'home' })
+  // change isAuth to true or false
+  authStore.updateAuth()
+  userAccess.value = isAuth.value
+  // // redirige seulement si on est sur /dashboard
+  if (route.name === "dashboard" && isAuth.value === false) {
+    router.push({ name: 'access-refused' })
   }
 }
 
+const addRoles = () => {
+  authStore.roles.push('admin')
+}
 
+const removeRoles = () => {
+  authStore.roles.pop()
+  // // redirige seulement si on est sur /dashboard
+  if (route.name === "admin" && authStore.roles[0] != 'admin') {
+    router.push({ name: 'access-refused' })
+  }
+}
 
 </script>
 
 <template>
   <div class="navigation">
     <aside class="history">
-      <h2>Navigation history</h2>
-      <ul>
-        <li v-for="(route, routeId) in history" :key="route + routeId" :title="route.path">
-            {{ route.path }}
-        </li>
-      </ul>
+      <h2>User</h2>
+      <p>
+        <span class="bold">isAuth : </span>
+        {{ isAuth }}
+      </p>
+      <p>
+        <span class="bold">userRoles : </span>
+        {{ userRoles }}
+      </p>
     </aside>
+
+    <!-- Navigation -->
     <nav class="d-flex">
       <!-- // programmatic navigation -->
-      <button @click="backInHistory(), $router.go(-1)">Go back</button>
+      <button @click="$router.go(-1)">Go back</button>
 
-      <RouterLink @click="pushInHistory({name: 'home', path: '/'})" to="/">home</RouterLink>
-      <RouterLink @click="pushInHistory({name: 'About', path: '/about'})" to="/about">About</RouterLink>
-      <RouterLink @click="pushInHistory({name: 'params', path: '/params/id=5'})" to="/params/id=5">Params</RouterLink>
-      <RouterLink @click="pushInHistory({name: 'products', path: '/products'})" to="/products">Query</RouterLink>
+      <RouterLink to="/">home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/params/id=5">Params</RouterLink>
+      <RouterLink to="/products">Products</RouterLink>
+
       <div v-for="id in ids" :key="id">
-        <!-- @click="checkId(id)" -->
-        <RouterLink @click="pushInHistory({name: 'details', path: '/details/' + id})" :to="{path : '/details/' + id }">details {{ id }}</RouterLink>
+        <RouterLink :to="{path : '/details/' + id }">details {{ id }}</RouterLink>
       </div>
-      <RouterLink @click="pushInHistory({name: 'dashboard', path: '/dashboard'})" to="/Dashboard">Dashboard</RouterLink>
 
-      <button @click="forwardInHistory(), $router.go(1)">Go forward</button>
+      <RouterLink to="/dashboard">Dashboard</RouterLink>
+      <RouterLink to="/admin">Admin</RouterLink>
+      <RouterLink to="/summary">En résumé</RouterLink>
+
+      <button @click="$router.go(1)">Go forward</button>
     </nav>
 
+    <!-- CTA Buttons  -->
     <div class="d-flex">
-      <p>
-        {{ DashboardMeta ? "accés autorisé à /Dashboard" : "accès non autorisé à /Dashboard. redirection vers home" }}
-      </p>
-      <button @click="putAuthentificationToFalse">
-        Modifier l'accès à /Dashboard
+      <button class="list-btn" @click="putAuthentificationToFalse">
+        {{ userAccess ? "refuser l'accès à /dashboard" : "autoriser l'accès à /dashboard" }}
+      </button>
+      <button class="list-btn" @click="addRoles">
+        addRoles
+      </button>
+      <button class="list-btn color-grey" @click="removeRoles">
+        removeRoles
       </button>
     </div>
   </div>

@@ -6,40 +6,47 @@ const showCode = ref(false)
 <template>
   <div class="page">
     <h1>Page Dashboard</h1>
-    <p>Accès autorisé car meta.isAuthenticated vaut true</p>
+    <p>Accès autorisé car meta.authRequired vaut true</p>
     <p>Navigation guards :</p>
     <code>
-      <pre>
-        // router/index.js
+      <pre> // router/index.js
+        import { computed } from 'vue'
+        import { useAuthentification } from "../store/useAuthentification.js"
+        
         {
-          path: '/Dashboard',
-          name: 'Dashboard',
-          component: () => import('../views/Dashboard.vue'),
+          {...},
           beforeEnter: (to, from, next) => {
-            if (to.meta.isAuthenticated === false) {
-              next({ name: 'home' })
+            // STORE
+            const authStore = useAuthentification()
+            const isAuth = computed(() => authStore.auth)
+            // END STORE
+
+            if (to.meta.authRequired && !isAuth.value) {
+              next({ name: 'access-refused', query: { redirect: to.fullPath }, })
             } else {
               next()
             }
           },
-          // only authenticated users can access Dashboard
           meta: { 
-            isAuthenticated: true,
-            layout: Default
+            authRequired: true,
           }
         },
       </pre>
     </code>
     <p>Equivalent à : <button v-show="!showCode" @click="showCode = true">...</button></p>
     <code v-if="showCode">
-      <pre>
-        // router/index.js
+      <pre> // router/index.js
         router.beforeEach((to, from, next) => {
-          // redirect to home if isn't authentificated
-          if (to.name === "Dashboard" && to.meta.isAuthenticated === false) {
-            next({ name: 'home' })
+          // STORE
+          const authStore = useAuthentification()
+          const isAuth = computed(() => authStore.auth)
+          // END STORE
+
+          if (to.meta.authRequired && !isAuth.value) {
+            next({ name: 'access-refused' })
+          } else {
+            next()
           }
-          else next()
         })
       </pre>
     </code>
