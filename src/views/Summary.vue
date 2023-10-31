@@ -36,23 +36,14 @@ const dropDown = (section) => {
       componentRef.value.classList.add('hide')
     }
   }
-  
-  // if (routerRef.value && section === "routerRef") {
-  //   if (routerRef.value.classList.contains('hide')) {
-  //     routerRef.value.classList.remove('hide')
-  //   } else {
-  //     routerRef.value.classList.add('hide')
-  //   }
-  // }
-
 }
 </script>
 
 <template>
   <div class="page">
     <h1>En résumé</h1>
-    <section class="hide" @click="dropDown('routerRef')" ref="routerRef">
-      <h2>router/index.js</h2>
+    <section>
+      <h2 class="hide" @click="dropDown('routerRef')" ref="routerRef">router/index.js</h2>
       <ul>
         <li>
           <span class="bold">Redirect :</span> 
@@ -165,9 +156,9 @@ router.beforeEach((to, from, next) => {
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    // will match /users/posva but not:
-    // - /users/posva/ because of strict: true
-    // - /Users/posva because of sensitive: true
+    // will match /users/john but not:
+    // - /users/john/ because of strict: true
+    // - /Users/john because of sensitive: true
     { path: '/users/:id', sensitive: true },
     // will match /users, /Users, and /users/42 but not /users/ or /users/42/
     { path: '/users/:id?' },
@@ -180,8 +171,8 @@ const router = createRouter({
       </ul>
     </section>
     
-    <section class="hide" @click="dropDown('componentRef')" ref="componentRef">
-      <h2>components/myComponent.vue</h2>
+    <section>
+      <h2 class="hide" @click="dropDown('componentRef')" ref="componentRef">components/myComponent.vue</h2>
       <ul>
         <li>
           <span class="bold">Props :</span> 
@@ -192,7 +183,7 @@ const router = createRouter({
             <pre>
 &#60;script setup&#62;
   import { defineProps } from 'vue'
-  import { onBeforeRouteUpdate, useRouter,onBeforeRouteLeave, useRoute } from "vue-router"
+  import { onBeforeRouteUpdate, onBeforeRouteLeave, useRoute, useRouter } from "vue-router"
 
   const props = defineProps({
     params: String,
@@ -200,16 +191,38 @@ const router = createRouter({
   })
 
   const router = useRouter()
+  const route = useRoute()
+
+  const params = useRoute().params
+  const params2 = useRouter().currentRoute.value.params
 
   onBeforeRouteUpdate(async (to, from) => {
     if (to.params.id != "5") {
+      // programmatic navigation
       router.replace({
         name: "redirection",
         query: { redirect: '/' + to.name + '/' + to.params.id }
       })
     }
   })
+
+  // programmatic navigation
+  const goBack = () => router.go(-1)
+  const goForward = () => router.go(1)
 &#60;/script&#62;</pre>
+
+<pre>
+  &#60;template&#62;
+    &#60;button @click="goBack"&#62; Go back &#60;/button&#62;
+    &#60;button @click="goForward"&#62; Go forward &#60;/button&#62;
+
+    &#60;p&#62; Props : &#123;&#123; props &#125;&#125; &#60;/p&#62;
+    &#60;p&#62; $route : &#123;&#123; $route.params &#125;&#125; &#60;/p&#62;
+    &#60;p&#62; $router : &#123;&#123; $router.currentRoute.value.params &#125;&#125; &#60;/p&#62;
+    &#60;p&#62; useRoute() : &#123;&#123; params &#125;&#125; &#60;/p&#62;
+    &#60;p&#62; useRouter() : &#123;&#123; params2 &#125;&#125; &#60;/p&#62;
+  &#60;/template&#62;
+</pre>
           </code>
         </li>
       </ul>
@@ -217,16 +230,20 @@ const router = createRouter({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 p {
   margin-top: 0;
   margin-bottom: 0;
 }
 section {
-  cursor: pointer;
+  h2 {
+    cursor: pointer;
+  }
 }
-.hide {
-  height: 50px;
+.hide + ul {
+  height: 0px;
+  padding: 0;
+  margin: 0;
   overflow: hidden;
 }
 </style>

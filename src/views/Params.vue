@@ -19,7 +19,7 @@ const showCode = ref(false)
 <template>
   <div class="page">
     <h1>Page Params</h1>
-
+    
     <p>
       <span class="bold">script :</span>
       Props : {{ props }}
@@ -72,7 +72,7 @@ const showCode = ref(false)
         <pre>
           // router/index.js
           {
-            path: 'params/id=:id',
+            path: 'params/:id',
             name: 'params',
             component: () => import('../components/ComponentParams.vue'),
             props: true, // will receive id as a props

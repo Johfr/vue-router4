@@ -175,9 +175,15 @@ const bright = (productCat) => {
             })
           &#60;/script&#62;
 
-          &#60;template&#62;
-            &#60;p v-show="!noCategoryFound"&#62; props.query : { "category": "exterieur" } &#60;/p&#62;
+          &#60;template&#62;            
+            &#60;button
+              @click="$router.replace({ path: '/products/plantes',  query: { category: 'exterieur' } })"
+            &#62;
+              exterieur
+            &#60;/button&#62;
             
+            &#60;p v-show="!noCategoryFound"&#62; props.query : { "category": "exterieur" } &#60;/p&#62;
+
             &#60;ul&#62;
               &#60;li
                 v-for="product in products"

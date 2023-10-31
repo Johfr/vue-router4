@@ -55,7 +55,7 @@ onBeforeRouteUpdate(async (to, from) => {
         </pre>
       </code>
     
-      <button v-if="!showMore" @click="showMore = true">Show More</button>
+      <button v-if="!showMore" @click="showMore = true">Identique à ...</button>
 
       <code v-if="showMore">
         <pre>

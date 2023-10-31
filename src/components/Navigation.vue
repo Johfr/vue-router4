@@ -44,7 +44,7 @@ const removeRoles = () => {
 
 <template>
   <div class="navigation">
-    <aside class="history">
+    <aside class="history" v-show="$route.name != 'summary'">
       <h2>User</h2>
       <p>
         <span class="bold">isAuth : </span>
@@ -63,7 +63,7 @@ const removeRoles = () => {
 
       <RouterLink to="/">home</RouterLink>
       <RouterLink to="/about">About</RouterLink>
-      <RouterLink to="/params/id=5">Params</RouterLink>
+      <RouterLink to="/params/5">Params</RouterLink>
       <RouterLink to="/products">Products</RouterLink>
 
       <div v-for="id in ids" :key="id">

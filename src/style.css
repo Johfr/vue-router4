@@ -104,7 +104,7 @@ pre {
   min-height: calc(100vh - 64px);
   max-width: 760px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 2rem 10rem;
 }
 
 @media (prefers-color-scheme: light) {
@@ -117,6 +117,7 @@ pre {
   }
   button {
     background-color: #00eb00;
-    background-color: #76ff76;
+    /* background-color: #76ff76; */
+    background-color: #40db1a;
   }
 }

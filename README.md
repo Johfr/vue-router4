@@ -4,6 +4,5 @@ pnpm i
 ## Run
 pnpm run dev
 
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Infos
+Projet réalisé sous forme de tuto de présentation de la version 4 du router vue avec des exemples d'utilisations concrêts
